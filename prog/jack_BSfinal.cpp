@@ -159,6 +159,9 @@ void out_file(char fname[200],char fname1[200],double avesub[datasize], double e
 	double err[r_sq_max];
 	std::ofstream ofsxyz;
 	std::ofstream ofsr;
+
+	bool aveSwitch = false;
+	
 		
 	ofsxyz.open(&(fname1[0]));
 	ofsr.open( &(fname[0]));
@@ -183,6 +186,10 @@ void out_file(char fname[200],char fname1[200],double avesub[datasize], double e
 			}
 		}
 		ofsxyz.close();
+		
+		if(aveSwitch)
+		  {
+		    
 		for (int r_sq=0; r_sq<r_sq_max; r_sq++) {
 			
 			if ( r_sq_count[r_sq] == 0 ) continue;
@@ -194,7 +201,23 @@ void out_file(char fname[200],char fname1[200],double avesub[datasize], double e
 			ofsr<<rad<<"	"<< ave[r_sq]<<"	"<<err[r_sq]<<endl;
 			//ofsr<<std::setw(7)<<rad<<std::setw(21)<<setprecision(15)<< ave[r_sq]<<std::setw(21)<<setprecision(15)<<err[r_sq]<<endl;
 		}
-		ofsr.close();
+		  }
+		else 
+		  {
+		for (int z=0; z<ZnodeSites; z++) {
+		for (int y=0; y<YnodeSites; y++) {
+		for (int x=0; x<XnodeSites; x++) {
+		  int r_sq = radius_sq( min(x,XnodeSites-x), min(y,YnodeSites-y), min(z,ZnodeSites-z) );
+		  float rad = sqrt((float)r_sq);
+		  ofsr<<rad<<"	"<< avesub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<"	"<<errsub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<endl;
+		  
+		}
+		}
+		}
+		  }
+				ofsr.close();
+
+		
 	}
 	
 

@@ -157,6 +157,8 @@ void out_data(int it,double avesub[datasize],double errsub[datasize]){
 int out_file(char fnamer[200],char fnamexyz[200],double avesub[datasize], double errsub[datasize]){
 #define radius_sq(x,y,z) ((x)*(x) + (y)*(y) + (z)*(z))
 #define min(a,b) (((a) < (b)) ? (a) : (b))
+  bool aveSwitch;
+  
 		int r_sq=0;
 		int r_sq_count[r_sq_max]={0};
 	double ave[r_sq_max];
@@ -187,7 +189,9 @@ int out_file(char fnamer[200],char fnamexyz[200],double avesub[datasize], double
 		std::ofstream ofsr;
 		ofsr.open( &(fnamer[0]));
 		ofsr.setf(ios::scientific);
-	
+		if(aveSwitch)
+		  {
+		    
 		for (int r_sq=0; r_sq<r_sq_max; r_sq++) {
 			
 			if ( r_sq_count[r_sq] == 0 ) continue;
@@ -198,6 +202,23 @@ int out_file(char fnamer[200],char fnamexyz[200],double avesub[datasize], double
 			float rad = sqrt((float)r_sq);
 			ofsr<<rad<<"	"<< ave[r_sq]<<"	"<<err[r_sq]<<endl;
 		}
+		  }
+		else
+		  {
+		    for (int z=0; z<ZnodeSites; z++) {
+		      for (int y=0; y<YnodeSites; y++) {
+			for (int x=0; x<XnodeSites; x++) {
+			  ofsxyz<<x<<"	"<<y<<"	"<<z<<"	"<< avesub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<"	"<<errsub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<endl;
+			  int r_sq = radius_sq( min(x,XnodeSites-x), min(y,YnodeSites-y), min(z,ZnodeSites-z) );
+			  float rad = sqrt((float)r_sq);
+			  
+			    ofsr<<rad<<"	"<< avesub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<"	"<<errsub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<endl;
+			  
+			}
+		      }
+		    }
+		  }
+		
 		ofsr.close();
     return 0;
 }

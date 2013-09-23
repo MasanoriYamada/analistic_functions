@@ -15,7 +15,7 @@ typedef std::complex<double> COMPLEX;
 
 int call_data(int,int,double[]);
 int call_jack(int,char[],double[]);
-void out_file(char[],char[],double[],double[]);
+int out_file(char[],char[],double[],double[]);
 void out_data(int,double[],double[]);
 double jack_ave_calc(int,double[]);
 double jack_err_calc(int,double[]);
@@ -131,53 +131,74 @@ void out_data(int it,double avesub[datasize],double errsub[datasize]){
 /**************************************************************************/
 //結果を書き出す	no (書きだすファイルパス,BS波動関数)	  //(rについて書くファイル名,xについて書くファイル名,書きだす内容)
 /**************************************************************************/
-void out_file(char fname[200],char fname1[200],double avesub[datasize], double errsub[datasize]){
+int out_file(char fnamer[200],char fnamexyz[200],double avesub[datasize], double errsub[datasize]){
 #define radius_sq(x,y,z) ((x)*(x) + (y)*(y) + (z)*(z))
 #define min(a,b) (((a) < (b)) ? (a) : (b))
-	int r_sq=0;
-	int r_sq_count[r_sq_max]={0};
+  bool aveSwitch = false;
+
+  		int r_sq=0;
+		int r_sq_count[r_sq_max]={0};
 	double ave[r_sq_max];
 	double err[r_sq_max];
-	std::ofstream ofsxyz;
-	std::ofstream ofsr;
-	
-	ofsxyz.open(&(fname1[0]));
-	ofsr.open( &(fname[0]));
-	
-	ofsxyz.setf(ios::scientific);
-	ofsr.setf(ios::scientific);
-	
-	
-	//	ofs<<"#"<<std::setw(7)<<"r"<<std::setw(21) <<setprecision(15)<<"BSwave(r)real part"<<std::setw(21) <<setprecision(15)<<"BSwave(r)imaginary part"<<endl;
-	for (int z=0; z<ZnodeSites; z++) {
-		for (int y=0; y<YnodeSites; y++) {
-			for (int x=0; x<XnodeSites; x++) {
-				ofsxyz<<x<<"	"<<y<<"	"<<z<<"	"<< avesub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<"	"<<errsub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<endl;
-				int r_sq = radius_sq( min(x,XnodeSites-x), min(y,YnodeSites-y), min(z,ZnodeSites-z) );
-				r_sq_count[r_sq]= r_sq_count[r_sq] +1;
-				ave[r_sq] =ave[r_sq] + avesub[(x) +XnodeSites*((y) + YnodeSites*((z)))];
-				err[r_sq] =err[r_sq] + errsub[(x) +XnodeSites*((y) + YnodeSites*((z)))];
-				//float rad = sqrt((float)r_sq);
-				//ofsr<<rad<<"	"<< avesub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<"	"<<errsub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<endl;
-				
+		std::ofstream ofsxyz;
+		ofsxyz.setf(ios::scientific);
+		ofsxyz.open(&(fnamexyz[0]));
+	if (!ofsxyz.is_open()) {
+		cout << "ERROR output file can't open (no exist)"<<endl;
+        exit(1);
+		return EXIT_FAILURE;
+	}
+
+		//	ofs<<"#"<<std::setw(7)<<"r"<<setprecision(15)<<"BSwave(r)real part"<<setprecision(15)<<"BSwave(r)imaginary part"<<endl;
+		for (int z=0; z<ZnodeSites; z++) {
+			for (int y=0; y<YnodeSites; y++) {
+				for (int x=0; x<XnodeSites; x++) {
+					ofsxyz<<x<<"	"<<y<<"	"<<z<<"	"<< avesub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<"	"<<errsub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<endl;
+					int r_sq = radius_sq( min(x,XnodeSites-x), min(y,YnodeSites-y), min(z,ZnodeSites-z) );
+					r_sq_count[r_sq]= r_sq_count[r_sq] +1;
+					ave[r_sq] =ave[r_sq] + avesub[(x) +XnodeSites*((y) + YnodeSites*((z)))];
+					err[r_sq] =err[r_sq] + errsub[(x) +XnodeSites*((y) + YnodeSites*((z)))];
+				}
 			}
 		}
-	}
-	ofsxyz.close();
-	for (int r_sq=0; r_sq<r_sq_max; r_sq++) {
+		ofsxyz.close();
+	
+		std::ofstream ofsr;
+		ofsr.open( &(fnamer[0]));
+		ofsr.setf(ios::scientific);
+		if(aveSwitch)
+		  {
+		    
+		for (int r_sq=0; r_sq<r_sq_max; r_sq++) {
+			
+			if ( r_sq_count[r_sq] == 0 ) continue;
+			
+			ave[r_sq] =ave[r_sq]/ ((double) r_sq_count[r_sq]);
+			err[r_sq] =err[r_sq]/ ((double) r_sq_count[r_sq]);
+			
+			float rad = sqrt((float)r_sq);
+			ofsr<<rad<<"	"<< ave[r_sq]<<"	"<<err[r_sq]<<endl;
+		}
+		  }
+		else
+		  {
+		    for (int z=0; z<ZnodeSites; z++) {
+		      for (int y=0; y<YnodeSites; y++) {
+			for (int x=0; x<XnodeSites; x++) {
+			  ofsxyz<<x<<"	"<<y<<"	"<<z<<"	"<< avesub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<"	"<<errsub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<endl;
+			  int r_sq = radius_sq( min(x,XnodeSites-x), min(y,YnodeSites-y), min(z,ZnodeSites-z) );
+			  float rad = sqrt((float)r_sq);
+			  
+			    ofsr<<rad<<"	"<< avesub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<"	"<<errsub[(x) +XnodeSites*((y) + YnodeSites*((z)))]<<endl;
+			  
+			}
+		      }
+		    }
+		  }
 		
-		if ( r_sq_count[r_sq] == 0 ) continue;
-		
-		ave[r_sq] =ave[r_sq]/ ((double) r_sq_count[r_sq]);
-		err[r_sq] =err[r_sq]/ ((double) r_sq_count[r_sq]);
-		
-		float rad = sqrt((float)r_sq);
-		ofsr<<rad<<"	"<< ave[r_sq]<<"	"<<err[r_sq]<<endl;
-		//ofsr<<std::setw(7)<<rad<<std::setw(21)<<setprecision(15)<< ave[r_sq]<<std::setw(21)<<setprecision(15)<<err[r_sq]<<endl;
-	}
-	ofsr.close();
+		ofsr.close();
+    return 0;
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

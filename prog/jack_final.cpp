@@ -157,7 +157,7 @@ void out_data(int it,double avesub[datasize],double errsub[datasize]){
 int out_file(char fnamer[200],char fnamexyz[200],double avesub[datasize], double errsub[datasize]){
 #define radius_sq(x,y,z) ((x)*(x) + (y)*(y) + (z)*(z))
 #define min(a,b) (((a) < (b)) ? (a) : (b))
-  bool aveSwitch;
+  bool aveSwitch = false;
   
 		int r_sq=0;
 		int r_sq_count[r_sq_max]={0};

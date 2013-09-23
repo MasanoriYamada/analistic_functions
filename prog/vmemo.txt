@@ -1,0 +1,26 @@
+仕様要求
+
+jack_subBSwave.cpp
+1.0
+とりあえず tshift 0 4 8 16 24を読み込めるように
+Laplacian.1.0.cpp
+binaryを読めるようにする
+jack_sub2point.cpp
+1.0
+取りあえず動く
+1.1
+cpsで吐き出したデータを読み込めるようにする
+outputをbinaryにした
+
+
+
+projBSwave[xyz,it,j,tshift]==>binprojBSwave[xyz,it,j*tshift]==>(ave,err)[xyz,it]
+
+
+
+
+fname_baseを設定するとそれを読んで、
+その下に以下のような構造をつくる
+
+./results/bin/xyz
+	|-

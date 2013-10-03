@@ -41,6 +41,7 @@ int main(int argc , char** argv){
 
 
 	for ( int j=0; j<binnumber; j++) {
+	  cout<<"conf"<<j<<endl;
 		for (int it=T_in; it<T_fi+1; it++) {
 			COMPLEX* proj_BSwave = new COMPLEX[XYZnodeSites];
 			COMPLEX* Laplacian_BSwave=new COMPLEX[XYZnodeSites];

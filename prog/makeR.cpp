@@ -40,11 +40,11 @@ main(int argc, char* argv[]){
 	
 	
 	for ( int j=0; j<binnumber; j++) {
-	for (int it=T_in; it<T_fi+1; it++) {
-	cout << "時間"<<it<<"conf"<<j<<"を計算中・・・"<<endl;
-		COMPLEX* omega_sub_prop = new COMPLEX[1];
-		COMPLEX* ave_sub_sub = new COMPLEX[datasize];
-			call_data(it,j,&(ave_sub_sub[0]),&(omega_sub_prop[0]));
+	  cout <<"conf"<<j<<"を計算中・・・"<<endl;
+	  for (int it=T_in; it<T_fi+1; it++) {
+	    COMPLEX* omega_sub_prop = new COMPLEX[1];
+	    COMPLEX* ave_sub_sub = new COMPLEX[datasize];
+		call_data(it,j,&(ave_sub_sub[0]),&(omega_sub_prop[0]));
 		COMPLEX* R_sub=new COMPLEX[datasize];
 		make_R(&(ave_sub_sub[0]),&(omega_sub_prop[0]),&(R_sub[0]));
 			out_data(it,j,&(R_sub[0]));

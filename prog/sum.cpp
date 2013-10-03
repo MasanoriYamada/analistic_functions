@@ -37,13 +37,13 @@ int main(int argc,char** argv){
 
 	
 	for ( int j=0; j<binnumber; j++) {
+	  cout<<"conf"<<j<<endl;
 		for (int it=T_in; it<T_fi+1; it++) {
 			COMPLEX* Tdep_BSwave= new COMPLEX[XYZnodeSites];
 			COMPLEX* Laplacian_BSwave=new COMPLEX[XYZnodeSites];
 			//cout<<"今conf"<<j<<"、時間"<<it<<"データの読み出し中"<<endl;
 			call_data(j,it,&(Laplacian_BSwave[0]),&(Tdep_BSwave[0]));
 			//cout<<"今conf"<<j<<"、時間"<<it<<"データの読み出し完了"<<endl;
-			cout<<"今conf"<<j<<"、時間"<<it<<"の計算を実行中"<<endl;
 			COMPLEX* potencial=new COMPLEX[XYZnodeSites];
 			sum(&(Laplacian_BSwave[0]),&(Tdep_BSwave[0]),&(potencial[0]));
 			delete []Laplacian_BSwave;

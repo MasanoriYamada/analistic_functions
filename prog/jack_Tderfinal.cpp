@@ -138,8 +138,8 @@ void out_data(int it,double avesub[datasize],double errsub[datasize]){
 	char fnamer[200]={0};
 	char fnamexyz[200]={0};
 
-	sprintf(fnamer,"%s/%06d.%s.it%02d",r_out_dir_path.c_str(),binnumber,base,it);
-	sprintf(fnamexyz,"%s/%06d.%s.it%02d",xyz_out_dir_path.c_str(),binnumber,base,it);
+	sprintf(fnamer,"%s/Tder.%06d.%s.it%02d",r_out_dir_path.c_str(),binnumber,base,it);
+	sprintf(fnamexyz,"%s/Tder.%06d.%s.it%02d",xyz_out_dir_path.c_str(),binnumber,base,it);
 
 	out_file(fnamer,fnamexyz,&(avesub[0]),&(errsub[0]));
 }

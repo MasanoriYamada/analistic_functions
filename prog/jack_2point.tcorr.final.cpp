@@ -135,7 +135,7 @@ void out_file(int it,char fname[200],COMPLEX avesub[datasize], COMPLEX errsub[da
 	
 	ofs.open(&(fname[0]));
 	for (int it=0; it<datasize; it++) {
-	ofs<< avesub[it].real()<<"	"<<errsub[it].real()<<endl;
+	  ofs<<it<<" "<<avesub[it].real()<<"	"<<errsub[it].real()<<endl;
 	}
 	ofs.close();
 	}
